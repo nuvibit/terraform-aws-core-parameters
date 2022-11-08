@@ -233,14 +233,14 @@ terraform output
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.15 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws.ssm_ps_writer"></a> [aws.ssm\_ps\_writer](#provider\_aws.ssm\_ps\_writer) | >= 3.15 |
+| <a name="provider_aws.ssm_ps_writer"></a> [aws.ssm\_ps\_writer](#provider\_aws.ssm\_ps\_writer) | >= 4.0 |
 
 ## Modules
 
@@ -256,17 +256,17 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_parameters"></a> [parameters](#input\_parameters) | n/a | `any` | n/a | yes |
+| <a name="input_parameters"></a> [parameters](#input\_parameters) | A map of parameters which should be stored as a map in SSM Parameter Store. | `any` | n/a | yes |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS Key to be used to encrypt the parameter entries. | `string` | `null` | no |
-| <a name="input_parameters_overwrite"></a> [parameters\_overwrite](#input\_parameters\_overwrite) | n/a | `bool` | `false` | no |
-| <a name="input_parameters_path_prefix"></a> [parameters\_path\_prefix](#input\_parameters\_path\_prefix) | n/a | `string` | `"/foundation"` | no |
+| <a name="input_parameters_overwrite"></a> [parameters\_overwrite](#input\_parameters\_overwrite) | Set to true to allow overwriting existing parameters. IAM role with write access is required. | `bool` | `false` | no |
+| <a name="input_parameters_path_prefix"></a> [parameters\_path\_prefix](#input\_parameters\_path\_prefix) | Prefix name to allow fully qualified parameter names which allows parameters to be stored as a map. | `string` | `"/foundation"` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_parameters_map"></a> [parameters\_map](#output\_parameters\_map) | n/a |
+| <a name="output_parameters_map"></a> [parameters\_map](#output\_parameters\_map) | The map of parameters which are stored as a map in SSM Parameter Store. |
 <!-- END_TF_DOCS -->
 
 ## Authors

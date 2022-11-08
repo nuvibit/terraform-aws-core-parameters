@@ -1,9 +1,9 @@
 
-# AWS REPLACE_ME Terraform module
+# AWS SSM Parameter Store Terraform module
 
 <!-- LOGO -->
-<a href="https://nuvibit.com">    
-  <img src="https://nuvibit.com/images/logo/logo-nuvibit-badge.png" alt="nuvibit logo" title="nuvibit" align="right" height="100" />
+<a href="https://nuvibit.com">
+    <img src="https://nuvibit.com/images/logo/logo-nuvibit-badge.png" alt="nuvibit logo" title="nuvibit" align="right" height="100" />
 </a>
 
 <!-- SHIELDS -->
@@ -12,38 +12,264 @@
 [![Latest Release][release-shield]][release-url]
 
 <!-- DESCRIPTION -->
-[Terraform][terraform-url] module to deploy REPLACE_ME resources on [AWS][aws-url]
+[Terraform][terraform-url] module to store and read a terraform HCL map via AWS SSM Parameter Store.
+The main purpose of the module is to store Foundation Core Parameters from various Core Accounts and make them available to other Core Accounts.
+Foundation Core Parameters can be sourced from different Core Accounts.
+HCL maps with three hierarchy levels are supported.
 
 <!-- ARCHITECTURE -->
 ## Architecture
-![architecture][architecture-png]
+![core-parameters architecture][architecture-png]
 
 <!-- FEATURES -->
 ## Features
-* Creates a REPLACE_ME
+* Select on Core Account for storing Foundation Core Parameters -> Foundation Core Parameter Account
+* Provision writer- and reader-roles in the Foundation Core Parameter Account
+* In the other Core Accounts create providers assuming the writer- and reader-roles
+* Store and read HCL maps up to three hierarchy levels in AWS SSM Parameter Store of the Foundation Core Parameter Account
+ 
 
 <!-- USAGE -->
 ## Usage
-
-### REPLACE_ME
+### Foundation Core Parameter Account
 ```hcl
-module "REPLACE_ME" {
-  source  = "nuvibit/REPLACE_ME/aws"
+module "foundation_parameter_roles" {
+  source  = "nuvibit/core-parameters/aws//modules/iam-roles"
+  version = "~> 1.0"
+}
+
+locals {
+  foundation_parameters = {
+    foundation_parameters = {
+      writer_role_arn = module.foundation_parameter_roles.parameters_writer_role_arn
+      reader_role_arn = module.foundation_parameter_roles.parameters_reader_role_arn
+    }
+  }
+}
+
+module "foundation_parameter_writer" {
+  source  = "nuvibit/core-parameters/aws"
   version = "~> 1.0"
 
-  input1 = "value1"
+  parameters    = local.foundation_parameters
 }
 ```
 
-<!-- EXAMPLES -->
-## Examples
 
-* [`examples/complete`][example-complete-url]
+### Org Mgmt Account
+```hcl
+provider "aws" {
+  region = "eu-central-1"
+  alias  = "foundation_parameter_writer"
+
+  assume_role {
+    // requires module.foundation_parameter_reader
+    role_arn = local.foundation_parameter_readonly["foundation_parameters"]["writer_role_arn"]
+  }
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_organizations_organization" "current" {}
+
+locals {
+  foundation_org_mgmt_parameters = {
+    version = "1.0"
+    org_mgmt = {
+      account_id          = data.aws_caller_identity.current.account_id
+      org_id              = data.aws_organizations_organization.current.id
+      main_region         = "eu-central-1"
+      example1 = {
+        test1_a = "test1_a"
+        test1_b = "test1_b"
+      }
+      example2 = {
+        test2_a = "test2_a"
+        test2_b = "test2_b"
+      }
+    }
+    core_security = {
+      delegation = {
+        securityhub      = true
+        guardduty        = true
+        config           = true
+        firewall_manager = true
+      }
+    }
+    account_baseline = {
+      auto_remediation = {
+        role_name = "foundation-auto-remediation-role"
+      }
+      aws_config = {
+        role_name = "FoundationAwsConfigRole"
+      }
+    }
+  }
+}
+
+module "foundation_parameter_writer" {
+  source  = "nuvibit/core-parameters/aws"
+  version = "~> 1.0"
+
+  parameters    = local.foundation_org_mgmt_parameters
+  providers = {
+    aws.ssm_ps_writer = aws.foundation_org_mgmt_parameters
+  }  
+}
+```
+Core Security delegation settings will be specified and configured in the Org Mgmt account.
+
+### Core Security Account
+```hcl
+provider "aws" {
+  region = "eu-central-1"
+  alias  = "foundation_parameter_writer"
+
+  assume_role {
+    // requires module.foundation_parameter_reader
+    role_arn = local.foundation_parameter_readonly["foundation_parameters"]["writer_role_arn"]
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+locals {
+  foundation_core_security_parameters = {
+    core_security = {
+      account_id          = data.aws_caller_identity.current.account_id
+      auto_remediation = {
+        execution_role_arn = module.core_security.auto_remediation["execution_role_arn"]
+    }
+    aws_config = {
+      aggregator_name = module.core_security.aws_config["aggregator_name"]
+    }    
+  }
+}
+
+module "foundation_parameter_writer" {
+  source  = "nuvibit/core-parameters/aws"
+  version = "~> 1.0"
+
+  parameters    = local.foundation_core_security_parameters
+  providers = {
+    aws.ssm_ps_writer = aws.foundation_parameter_writer
+  }  
+}
+```
+
+### All Foundation Core Accounts
+```hcl
+provider "aws" {
+  region = "eu-central-1"
+  alias  = "foundation_parameter_reader"
+
+  assume_role {
+    role_arn = "arn:aws:iam::{account-id of Foundation Core Parameter Account}:role/core-parameter-writer-role"
+  }
+}
+
+module "foundation_parameter_reader" {
+  source  = "nuvibit/core-parameters/aws//modules/reader"
+  version = "~> 1.0"
+
+  providers = {
+    aws.ssm_ps_reader = aws.foundation_parameter_reader
+  }
+}
+
+locals {
+  foundation_parameter_readonly = module.foundation_parameter_reader.parameters
+}
+```
+
+output "foundation_parameters" {
+  value = local.foundation_parameter_readonly
+}
+```
+
+```hcl
+terraform output
+{    
+  "account_baseline" = {
+    "auto_remediation" = {
+      "role_name" = "foundation-auto-remediation-role"
+    }
+    "aws_config" = {
+      "role_name" = "FoundationAwsConfigRole"
+    }
+  }
+  "core_security" = {
+    "account_id" = "******"
+    "auto_remediation" = {
+      "execution_role_arn" = "arn:aws:iam::******:role/auto-remediation-execution-role"
+    }
+    "aws_config" = {
+      "aggregator_name" = "foundation_config_aggregator"
+    }
+    "delegation" = {
+      "config" = "true"
+      "firewall_manager" = "true"
+      "guardduty" = "true"
+      "securityhub" = "true"
+    }
+  }
+  "org_mgmt" = {
+    "account_id" = "******"
+    "example1" = {
+      test1_a = "test1_a"
+      test1_b = "test1_b"
+    }
+    "example2" = {
+      "test2_a" = "test2_a"
+      "test2_b" = "test2_b"
+    }
+    "main_region" = "eu-central-1"
+    "org_id" = "o-******"
+  }
+}
+```
+
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.15 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws.ssm_ps_writer"></a> [aws.ssm\_ps\_writer](#provider\_aws.ssm\_ps\_writer) | >= 3.15 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_ssm_parameter.ssm_parameters](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_parameters"></a> [parameters](#input\_parameters) | n/a | `any` | n/a | yes |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS Key to be used to encrypt the parameter entries. | `string` | `null` | no |
+| <a name="input_parameters_overwrite"></a> [parameters\_overwrite](#input\_parameters\_overwrite) | n/a | `bool` | `false` | no |
+| <a name="input_parameters_path_prefix"></a> [parameters\_path\_prefix](#input\_parameters\_path\_prefix) | n/a | `string` | `"/foundation"` | no |
+| <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_parameters_map"></a> [parameters\_map](#output\_parameters\_map) | n/a |
 <!-- END_TF_DOCS -->
 
-<!-- AUTHORS -->
 ## Authors
 
 This module is maintained by [Nuvibit][nuvibit-url] with help from [these amazing contributors][contributors-url]
@@ -58,18 +284,20 @@ See [LICENSE][license-url] for full details
 <!-- COPYRIGHT -->
 <br />
 <br />
-<p align="center">Copyright &copy; 2022 Nuvibit AG</p>
+<p align="center">Copyright &copy; 2022 Nuvibit AG Switzerland</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [nuvibit-shield]: https://img.shields.io/badge/maintained%20by-nuvibit.com-%235849a6.svg?style=flat&color=1c83ba
 [nuvibit-url]: https://nuvibit.com
 [terraform-version-shield]: https://img.shields.io/badge/tf-%3E%3D0.15.0-blue.svg?style=flat&color=blueviolet
 [terraform-version-url]: https://www.terraform.io/upgrade-guides/0-15.html
-[release-shield]: https://img.shields.io/github/v/release/nuvibit/REPLACE_ME?style=flat&color=success
-[architecture-png]: https://github.com/nuvibit/REPLACE_ME/blob/main/docs/architecture.png?raw=true
-[release-url]: https://github.com/nuvibit/REPLACE_ME/releases
-[contributors-url]: https://github.com/nuvibit/REPLACE_ME/graphs/contributors
-[license-url]: https://github.com/nuvibit/REPLACE_ME/tree/main/LICENSE
+[release-shield]: https://img.shields.io/github/v/release/nuvibit/terraform-aws-core-parameters?style=flat&color=success
+[architecture-png]: https://github.com/nuvibit/terraform-aws-core-parameters/blob/main/docs/architecture.png?raw=true
+[release-url]: https://github.com/nuvibit/terraform-aws-core-parameters/releases
+[contributors-url]: https://github.com/nuvibit/terraform-aws-core-parameters/graphs/contributors
+[license-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/LICENSE
 [terraform-url]: https://www.terraform.io
 [aws-url]: https://aws.amazon.com
-[example-complete-url]: https://github.com/nuvibit/REPLACE_ME/tree/main/examples/complete
+[core-parameters-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters
+[core-parameters-vpc-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters-vpc
+[core-parameters-sns-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters-sns

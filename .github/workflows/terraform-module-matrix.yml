@@ -1,0 +1,31 @@
+name: TERRAFORM MODULE MATRIX
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform-module-matrix:
+    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-matrix.yml@v1
+    if: ${{ github.event_name == 'pull_request' }}
+    with:
+      tflint_repo: "nuvibit/github-tflint-config"
+      tflint_repo_config_path: "aws/.tflint.hcl"
+      terratest_config_repo: "nuvibit/github-terratest-config"
+      terratest_config_repo_path: "aws/matrix.json"
+    secrets:
+      GHE_API_TOKEN: ${{ secrets.GHE_API_TOKEN }}
+      TFE_API_TOKEN: ${{ secrets.TFE_API_TOKEN }}
+      TERRATEST_AWS_DEFAULT_REGION: ${{ secrets.TERRATEST_AWS_DEFAULT_REGION }}
+      TERRATEST_AWS_ACCESS_KEY_ID: ${{ secrets.TERRATEST_AWS_ACCESS_KEY_ID }}
+      TERRATEST_AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRATEST_AWS_SECRET_ACCESS_KEY }}
+
+  terraform-module-release:
+    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-release.yml@v1
+    if: ${{ github.event_name == 'push' }}
+    secrets:
+      GHE_API_TOKEN: ${{ secrets.GHE_API_TOKEN }}

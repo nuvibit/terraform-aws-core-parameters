@@ -194,7 +194,7 @@ module "core_parameter_writer1" {
 
   parameters    = local.foundation_org_mgmt_parameters
   resource_tags = local.resource_tags
-  
+
   providers = {
     aws.ssm_ps_writer = aws.core_parameter_writer
   }

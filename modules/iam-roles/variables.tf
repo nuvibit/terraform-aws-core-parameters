@@ -12,20 +12,20 @@ variable "account_ids" {
 
 variable "parameters_path_prefix" {
   description = "Prefix name to allow fully qualified parameter names which allows parameters to be stored as a map."
-  type    = string
-  default = "/foundation"
+  type        = string
+  default     = "/foundation"
 }
 
 variable "parameters_reader_role_name" {
   description = "Name of IAM role which will be created to read parameters from SSM Parameter Store."
-  type    = string
-  default = "core-parameter-reader-role"
+  type        = string
+  default     = "core-parameter-reader-role"
 }
 
 variable "parameters_writer_role_name" {
   description = "Name of IAM role which will be created to write parameters into SSM Parameter Store."
-  type    = string
-  default = "core-parameter-writer-role"
+  type        = string
+  default     = "core-parameter-writer-role"
 }
 
 variable "kms_key_arn" {

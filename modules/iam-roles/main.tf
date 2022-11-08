@@ -2,18 +2,17 @@
 # ¦ REQUIREMENTS
 # ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  # This module is only being tested with Terraform 0.15.x and newer.
-  required_version = ">= 0.15.0"
+  # This module is only being tested with Terraform 1.0.0 and newer.
+  required_version = ">= 1.0.0"
 
   required_providers {
     aws = {
       source                = "hashicorp/aws"
-      version               = ">= 3.15"
+      version               = ">= 4.0"
       configuration_aliases = []
     }
   }
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ DATA
@@ -21,14 +20,12 @@ terraform {
 data "aws_caller_identity" "this_account" {}
 data "aws_organizations_organization" "this_org" {}
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   org_id = var.org_id == null ? data.aws_organizations_organization.this_org.id : var.org_id
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ PARAMETER READER - IAM ROLE
@@ -110,9 +107,9 @@ data "aws_iam_policy_document" "parameters_reader" {
   }
 }
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ PARAMETER WRITER - IAM ROLE
+#
 # ---------------------------------------------------------------------------------------------------------------------
 # IAM role that can be assumed by anyone in the organization
 # to write parameters to the parameter store

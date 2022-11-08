@@ -14,7 +14,7 @@ func TestCoreParameters(t *testing.T) {
 
 	// Create IAM Roles
 	terraformCoreParameterRoles := &terraform.Options{
-		TerraformDir: "../examples/parameters",
+		TerraformDir: "../examples/complete",
 		NoColor:      false,
 		Lock:         true,
 		Targets: 	  []string {
@@ -26,7 +26,7 @@ func TestCoreParameters(t *testing.T) {
 
 	// Write Parameters
 	terraformCoreParametersWriter := &terraform.Options{
-		TerraformDir: "../examples/parameters",
+		TerraformDir: "../examples/complete",
 		NoColor:      false,
 		Lock:         true,
 		Targets: 	  []string {
@@ -41,7 +41,7 @@ func TestCoreParameters(t *testing.T) {
 
 	// Read Parameters
 	terraformCoreParametersReader := &terraform.Options{
-		TerraformDir: "../examples/parameters",
+		TerraformDir: "../examples/complete",
 		NoColor:      false,
 		Lock:         true,
 	}

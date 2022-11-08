@@ -1,5 +1,5 @@
 
-# AWS SSM Parameter Store Terraform module
+# AWS Core Parameters (via SSM Parameter Store) Terraform module
 
 <!-- LOGO -->
 <a href="https://nuvibit.com">
@@ -54,7 +54,6 @@ module "foundation_parameter_writer" {
   parameters    = local.foundation_parameters
 }
 ```
-
 
 ### Org Mgmt Account
 ```hcl

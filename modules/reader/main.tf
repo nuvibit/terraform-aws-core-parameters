@@ -2,13 +2,13 @@
 # ¦ REQUIREMENTS
 # ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  # This module is only being tested with Terraform 0.15.x and newer.
-  required_version = ">= 0.15.0"
+  # This module is only being tested with Terraform 1.0.0 and newer.
+  required_version = ">= 1.0.0"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.71"
+      version = ">= 4.0"
       configuration_aliases = [
         aws.ssm_ps_reader
       ]

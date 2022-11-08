@@ -12,7 +12,7 @@
 [![Latest Release][release-shield]][release-url]
 
 <!-- DESCRIPTION -->
-[Terraform][terraform-url] module to store and read a terraform HCL map via AWS SSM Parameter Store.
+[Terraform][terraform-url] module to store and read a terraform HCL map via [AWS][aws-url] SSM Parameter Store.
 The main purpose of the module is to store foundation/core parameters from various AWS Accounts and make them available to other AWS Accounts.
 Foundation/core parameters can be sourced from different AWS Accounts.
 HCL maps with three hierarchy levels are supported.

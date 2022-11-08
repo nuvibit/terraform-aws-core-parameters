@@ -178,16 +178,15 @@ module "foundation_parameter_reader" {
 locals {
   foundation_parameter_readonly = module.foundation_parameter_reader.parameters
 }
-```
 
 output "foundation_parameters" {
   value = local.foundation_parameter_readonly
 }
 ```
 
+### Example output of foundation parameters
 ```hcl
-terraform output
-{    
+{
   "account_baseline" = {
     "auto_remediation" = {
       "role_name" = "foundation-auto-remediation-role"
@@ -226,7 +225,6 @@ terraform output
   }
 }
 ```
-
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

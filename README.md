@@ -74,9 +74,9 @@ locals {
   foundation_org_mgmt_parameters = {
     version = "1.0"
     org_mgmt = {
-      account_id          = data.aws_caller_identity.current.account_id
-      org_id              = data.aws_organizations_organization.current.id
-      main_region         = "eu-central-1"
+      account_id  = data.aws_caller_identity.current.account_id
+      org_id      = data.aws_organizations_organization.current.id
+      main_region = "eu-central-1"
       example1 = {
         test1_a = "test1_a"
         test1_b = "test1_b"
@@ -109,10 +109,10 @@ module "foundation_parameter_writer" {
   source  = "nuvibit/core-parameters/aws"
   version = "~> 1.0"
 
-  parameters    = local.foundation_org_mgmt_parameters
+  parameters = local.foundation_org_mgmt_parameters
   providers = {
     aws.ssm_ps_writer = aws.foundation_org_mgmt_parameters
-  }  
+  }
 }
 ```
 Core Security delegation settings will be specified and configured in the Org Mgmt account.
@@ -134,13 +134,14 @@ data "aws_caller_identity" "current" {}
 locals {
   foundation_core_security_parameters = {
     core_security = {
-      account_id          = data.aws_caller_identity.current.account_id
+      account_id = data.aws_caller_identity.current.account_id
       auto_remediation = {
         execution_role_arn = module.core_security.auto_remediation["execution_role_arn"]
+      }
+      aws_config = {
+        aggregator_name = module.core_security.aws_config["aggregator_name"]
+      }
     }
-    aws_config = {
-      aggregator_name = module.core_security.aws_config["aggregator_name"]
-    }    
   }
 }
 
@@ -148,10 +149,10 @@ module "foundation_parameter_writer" {
   source  = "nuvibit/core-parameters/aws"
   version = "~> 1.0"
 
-  parameters    = local.foundation_core_security_parameters
+  parameters = local.foundation_core_security_parameters
   providers = {
     aws.ssm_ps_writer = aws.foundation_parameter_writer
-  }  
+  }
 }
 ```
 
@@ -204,10 +205,10 @@ output "foundation_parameters" {
       "aggregator_name" = "foundation_config_aggregator"
     }
     "delegation" = {
-      "config" = "true"
+      "config"           = "true"
       "firewall_manager" = "true"
-      "guardduty" = "true"
-      "securityhub" = "true"
+      "guardduty"        = "true"
+      "securityhub"      = "true"
     }
   }
   "org_mgmt" = {
@@ -221,7 +222,7 @@ output "foundation_parameters" {
       "test2_b" = "test2_b"
     }
     "main_region" = "eu-central-1"
-    "org_id" = "o-******"
+    "org_id"      = "o-******"
   }
 }
 ```

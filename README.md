@@ -13,25 +13,31 @@
 
 <!-- DESCRIPTION -->
 [Terraform][terraform-url] module to store and read a terraform HCL map via AWS SSM Parameter Store.
-The main purpose of the module is to store Foundation Core Parameters from various Core Accounts and make them available to other Core Accounts.
-Foundation Core Parameters can be sourced from different Core Accounts.
+The main purpose of the module is to store foundation/core parameters from various AWS Accounts and make them available to other AWS Accounts.
+Foundation/core parameters can be sourced from different AWS Accounts.
 HCL maps with three hierarchy levels are supported.
 
 <!-- ARCHITECTURE -->
 ## Architecture
 ![core-parameters architecture][architecture-png]
 
+<!-- REQUIREMENTS -->
+## Requirements
+| :exclamation: This module utilizes cross-account IAM AssumeRoles      |
+|-----------------------------------------|
+* A dedicated AWS Account should be hosting the foundation/core parameters in AWS SSM Parameter Store
+* Other AWS Accounts can utilize the cross-account IAM AssumeRoles to access foundation/core parameters
+* Dedicated Terraform providers are required depending on the intended permissions
+
 <!-- FEATURES -->
 ## Features
-* Select on Core Account for storing Foundation Core Parameters -> Foundation Core Parameter Account
-* Provision writer- and reader-roles in the Foundation Core Parameter Account
-* In the other Core Accounts create providers assuming the writer- and reader-roles
-* Store and read HCL maps up to three hierarchy levels in AWS SSM Parameter Store of the Foundation Core Parameter Account
- 
+* Parameters in SSM Parameter Store can store HCL maps with up to three hierarchy levels
+* Cross-account writer and reader IAM AssumeRoles will be provisioned in the AWS Account hosting the foundation/core parameters
+* Parameters can be accessed from other AWS Accounts with IAM AssumeRoles
 
 <!-- USAGE -->
 ## Usage
-### Foundation Core Parameter Account
+### Foundation/Core Parameter Account
 ```hcl
 module "foundation_parameter_roles" {
   source  = "nuvibit/core-parameters/aws//modules/iam-roles"
@@ -55,7 +61,7 @@ module "foundation_parameter_writer" {
 }
 ```
 
-### Org Mgmt Account
+### Org Management Account
 ```hcl
 provider "aws" {
   region = "eu-central-1"
@@ -156,7 +162,7 @@ module "foundation_parameter_writer" {
 }
 ```
 
-### All Foundation Core Accounts
+### Other AWS Accounts
 ```hcl
 provider "aws" {
   region = "eu-central-1"
@@ -185,7 +191,7 @@ output "foundation_parameters" {
 }
 ```
 
-### Example output of foundation parameters
+### Example output of foundation/core parameters
 ```hcl
 {
   "account_baseline" = {

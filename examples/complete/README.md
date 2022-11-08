@@ -4,7 +4,8 @@ A complete example for how to use this terraform module
 
 ## Which resources are deployed in this example?
 
-* REPLACE_ME
+* SSM Parameter Store parameters
+* IAM roles
 
 ## How do you run this example?
 

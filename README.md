@@ -233,6 +233,11 @@ output "foundation_parameters" {
 }
 ```
 
+<!-- EXAMPLES -->
+## Examples
+
+* [`examples/complete`][core-parameters-test-url]
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -274,6 +279,7 @@ No modules.
 | <a name="output_parameters_map"></a> [parameters\_map](#output\_parameters\_map) | The map of parameters which are stored as a map in SSM Parameter Store. |
 <!-- END_TF_DOCS -->
 
+<!-- AUTHORS -->
 ## Authors
 
 This module is maintained by [Nuvibit][nuvibit-url] with help from [these amazing contributors][contributors-url]
@@ -288,7 +294,7 @@ See [LICENSE][license-url] for full details
 <!-- COPYRIGHT -->
 <br />
 <br />
-<p align="center">Copyright &copy; 2022 Nuvibit AG Switzerland</p>
+<p align="center">Copyright &copy; 2022 Nuvibit AG</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [nuvibit-shield]: https://img.shields.io/badge/maintained%20by-nuvibit.com-%235849a6.svg?style=flat&color=1c83ba
@@ -302,6 +308,4 @@ See [LICENSE][license-url] for full details
 [license-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/LICENSE
 [terraform-url]: https://www.terraform.io
 [aws-url]: https://aws.amazon.com
-[core-parameters-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters
-[core-parameters-vpc-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters-vpc
-[core-parameters-sns-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/core-parameters-sns
+[core-parameters-test-url]: https://github.com/nuvibit/terraform-aws-core-parameters/tree/main/examples/complete

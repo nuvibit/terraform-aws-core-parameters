@@ -169,7 +169,7 @@ provider "aws" {
   alias  = "foundation_parameter_reader"
 
   assume_role {
-    role_arn = "arn:aws:iam::{account-id of Foundation Core Parameter Account}:role/core-parameter-writer-role"
+    role_arn = "arn:aws:iam::{account-id of Foundation Core Parameter Account}:role/core-parameter-reader-role"
   }
 }
 

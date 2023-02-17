@@ -277,6 +277,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_parameters_map"></a> [parameters\_map](#output\_parameters\_map) | The map of parameters which are stored as a map in SSM Parameter Store. |
+| <a name="output_parameters_path_prefix"></a> [parameters\_path\_prefix](#output\_parameters\_path\_prefix) | Pass through parameters\_path\_prefix. |
 <!-- END_TF_DOCS -->
 
 <!-- AUTHORS -->

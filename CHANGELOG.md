@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.1.0](https://github.com/nuvibit/terraform-aws-core-parameters/compare/1.0.1...1.1.0) (2023-02-27)
+
+
+### Features
+
+* add optional storing of param role arns ([5de29b6](https://github.com/nuvibit/terraform-aws-core-parameters/commit/5de29b6027ce70e7812ffb6a7ee1a1e860f8ce5c))
+
 ## [1.0.1](https://github.com/nuvibit/terraform-aws-core-parameters/compare/1.0.0...1.0.1) (2022-11-14)
 
 

@@ -109,7 +109,6 @@ data "aws_iam_policy_document" "parameters_reader" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ PARAMETER WRITER - IAM ROLE
-#
 # ---------------------------------------------------------------------------------------------------------------------
 # IAM role that can be assumed by anyone in the organization
 # to write parameters to the parameter store
@@ -183,17 +182,27 @@ data "aws_iam_policy_document" "parameters_writer" {
     ]
     resources = ["*"]
   }
-  dynamic "statement" {
-    for_each = var.kms_key_arn != null ? ["enabled"] : []
-    content {
-      sid    = "AllowKmsCmkAccess"
-      effect = "Allow"
-      actions = [
-        "kms:GenerateDataKey",
-        "kms:Encrypt",
-        "kms:Decrypt"
-      ]
-      resources = [var.kms_key_arn]
-    }
-  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ STORE_PARAMETERS - OPTIONAL 
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_ssm_parameter" "writer_role_arn" {
+  count = var.store_parameters == true ? 1 : 0
+
+  name      = "${var.parameters_path_prefix}/platform_parameter/writer_role_arn"
+  type      = "String"
+  value     = aws_iam_role.parameters_writer.arn
+  overwrite = true
+  tags      = var.resource_tags
+}
+
+resource "aws_ssm_parameter" "reader_role_arn" {
+  count = var.store_parameters == true ? 1 : 0
+
+  name      = "${var.parameters_path_prefix}/platform_parameter/reader_role_arn"
+  type      = "String"
+  value     = aws_iam_role.parameters_reader.arn
+  overwrite = true
+  tags      = var.resource_tags
 }

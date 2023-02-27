@@ -41,8 +41,8 @@ variable "kms_key_arn" {
 
 variable "store_parameters" {
   description = "Specifies, if the Core Parameter IAM Role-ARNs shall be sored to the parameter store."
-  type    = bool
-  default = false 
+  type        = bool
+  default     = false
 }
 
 

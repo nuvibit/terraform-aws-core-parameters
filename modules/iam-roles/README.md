@@ -51,6 +51,8 @@ No modules.
 | [aws_iam_role.parameters_writer](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.parameters_reader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy.parameters_writer](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_ssm_parameter.reader_role_arn](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
+| [aws_ssm_parameter.writer_role_arn](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
 | [aws_caller_identity.this_account](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.parameters_reader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.parameters_reader_trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -71,6 +73,7 @@ No modules.
 | <a name="input_parameters_reader_role_name"></a> [parameters\_reader\_role\_name](#input\_parameters\_reader\_role\_name) | Name of IAM role which will be created to read parameters from SSM Parameter Store. | `string` | `"core-parameter-reader-role"` | no |
 | <a name="input_parameters_writer_role_name"></a> [parameters\_writer\_role\_name](#input\_parameters\_writer\_role\_name) | Name of IAM role which will be created to write parameters into SSM Parameter Store. | `string` | `"core-parameter-writer-role"` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
+| <a name="input_store_parameters"></a> [store\_parameters](#input\_store\_parameters) | Specifies, if the Core Parameter IAM Role-ARNs shall be sored to the parameter store. | `bool` | `false` | no |
 
 ## Outputs
 
@@ -78,6 +81,7 @@ No modules.
 |------|-------------|
 | <a name="output_parameters_reader_role_arn"></a> [parameters\_reader\_role\_arn](#output\_parameters\_reader\_role\_arn) | ARN of role used to read parameters into SSM Parameter Store. |
 | <a name="output_parameters_reader_role_name"></a> [parameters\_reader\_role\_name](#output\_parameters\_reader\_role\_name) | Name of role used to read parameters into SSM Parameter Store. |
+| <a name="output_parameters_roles"></a> [parameters\_roles](#output\_parameters\_roles) | Map that will optionally be stored to the parameter store. |
 | <a name="output_parameters_writer_role_arn"></a> [parameters\_writer\_role\_arn](#output\_parameters\_writer\_role\_arn) | ARN of role used to write parameters into SSM Parameter Store. |
 | <a name="output_parameters_writer_role_name"></a> [parameters\_writer\_role\_name](#output\_parameters\_writer\_role\_name) | Name of role used to write parameters into SSM Parameter Store. |
 <!-- END_TF_DOCS -->

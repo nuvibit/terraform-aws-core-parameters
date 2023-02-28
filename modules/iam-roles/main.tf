@@ -163,7 +163,8 @@ data "aws_iam_policy_document" "parameters_writer" {
       "ssm:DeleteParameters",
       "ssm:PutParameter",
       "ssm:ListTagsForResource",
-      "ssm:AddTagsToResource"
+      "ssm:AddTagsToResource",
+      "ssm:RemoveTagsFromResource"
     ]
     resources = [
       format(

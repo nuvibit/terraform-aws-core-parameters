@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1](https://github.com/nuvibit/terraform-aws-core-parameters/compare/1.1.0...1.1.1) (2023-02-28)
+
+
+### Bug Fixes
+
+* Merge pull request [#5](https://github.com/nuvibit/terraform-aws-core-parameters/issues/5) from nuvibit/fix_writer_permission ([5e500ec](https://github.com/nuvibit/terraform-aws-core-parameters/commit/5e500ec053270ae69fdf87907f49f1f4bda9f2f8))
+
 # [1.1.0](https://github.com/nuvibit/terraform-aws-core-parameters/compare/1.0.1...1.1.0) (2023-02-27)
 
 

@@ -7,12 +7,57 @@ locals {
 
   # Only 3 levels are allowed
   foundation_parameters_1 = {
+    management : {
+      main_region : "eu-central-1"
+      active_regions : ["eu-central-1", "eu-central-2"]
+      read_tags_role_name : "read-account-tags-role"
+      account_access_role : "OrganizationAccountAccessRole"
+      organization : {
+        units : [
+          "Suspended",
+          "Exceptions",
+          "Infrastructure",
+          "Security",
+          "Workloads/Prod",
+          "Workloads/NonProd"
+        ]
+        core_account_ids : {
+          org_management : "123456789000"
+          security : "123456789000"
+          connectivity : "123456789000"
+          log_archive : "123456789000"
+        }
+        core_account_tags : {
+          org_management : jsonencode({ tag1 : "value", tag2 : "value" })
+          security : jsonencode({})
+          connectivity : jsonencode({})
+          log_archive : jsonencode({})
+        }
+      }
+    }
+    security : {
+      config : {}
+      delegation : {
+        securityhub : true
+        guardduty : false
+        config : true
+        firewall_manager : true
+      }
+    }
+    connectivity : {
+      route53_public_hosted_zones : [
+        "example.com"
+      ]
+    }
+  }
+
+  foundation_parameters_2 = {
     "organization.management" : {
       "main_region" : "eu-central-1"
-      "active_regions" : join(",",["eu-central-1", "eu-central-2"])
+      "active_regions" : join(",", ["eu-central-1", "eu-central-2"])
       "read_tags_role_name" : "read-account-tags-role"
       "account_access_role" : "OrganizationAccountAccessRole"
-      "organization_units" :  join(",", [
+      "organization_units" : join(",", [
         "Suspended",
         "Exceptions",
         "Infrastructure",
@@ -37,7 +82,7 @@ locals {
       }
     }
     "organization.organization" = {
-      "aws_service_access_principals": join(",", [
+      "aws_service_access_principals" : join(",", [
         "access-analyzer.amazonaws.com",
         "backup.amazonaws.com",
         "cloudtrail.amazonaws.com",
@@ -144,7 +189,6 @@ locals {
             -----BEGIN CERTIFICATE-----
             MIIEqDCCA5CgAwIBAgINAe5fGFqz6caEpQQ64TANBgkqhkiG9w0BAQsFADBtMQsw
 EOT
-
       }
     }
     "security.image_factory" = {
@@ -195,55 +239,8 @@ EOT
         "iam_role_boundary_policy" : "n/a"
       }
     }
-
-    connectivity : {
-      route53_public_hosted_zones : [
-        "example.com"
-      ]
-    }
-  }
-
-  # to avoid additional levels inside the paramter store, the keys itself two keys can be combines
-  foundation_parameters_2 = {
-    "management.organization" : {
-      units : [
-        "Suspended",
-        "Exceptions",
-        "Infrastructure",
-        "Security",
-        "Workloads/Prod",
-        "Workloads/NonProd"
-      ]
-      core_account_ids : {
-        org_management : "123456789000"
-        security : "123456789000"
-        connectivity : "123456789000"
-        log_archive : "123456789000"
-      }
-      core_account_tags : {
-        org_management : jsonencode({ tag1 : "value", tag2 : "value" })
-        security : jsonencode({})
-        connectivity : jsonencode({})
-        log_archive : jsonencode({})
-      }
-    }
-    "management.region" : {
-      main_region : "eu-central-1"
-      active_regions : ["eu-central-1", "eu-central-2"]
-    }
-    "management.iam" : {
-      read_tags_role_name : "read-account-tags-role"
-      account_access_role : "OrganizationAccountAccessRole"
-    }
-    "security.config" : {}
-    "security.delegation" : {
-      securityhub : true
-      guardduty : false
-      config : true
-      firewall_manager : true
-    }
     "connectivity.route53" : {
-      public_hosted_zones : [
+      "public_hosted_zones" : [
         "example.com"
       ]
     }

@@ -53,7 +53,7 @@ locals {
 
 
   # convention for level1-name
-  # {capability_domain}{feature}
+  # /{capability_domain}.{feature_name}/{attribute_name}
   foundation_parameters_2 = {
     "management.organization" : {
       "main_region" : "eu-central-1"

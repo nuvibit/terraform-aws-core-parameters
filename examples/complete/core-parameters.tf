@@ -51,20 +51,14 @@ locals {
     }
   }
 
+
+  # convention for level1-name
+  # {capability_domain}{feature}
   foundation_parameters_2 = {
-    "organization.management" : {
+    "management.organization" : {
       "main_region" : "eu-central-1"
       "active_regions" : join(",", ["eu-central-1", "eu-central-2"])
-      "read_tags_role_name" : "read-account-tags-role"
       "account_access_role" : "OrganizationAccountAccessRole"
-      "organization_units" : join(",", [
-        "Suspended",
-        "Exceptions",
-        "Infrastructure",
-        "Security",
-        "Workloads/Prod",
-        "Workloads/NonProd"
-      ])
       "core_account_ids" : {
         "org_management" : "123456789000"
         "security" : "123456789000"
@@ -80,42 +74,47 @@ locals {
         "connectivity" : jsonencode({})
         "log_archive" : jsonencode({})
       }
+      "aws_organization" = {
+        "aws_service_access_principals" : join(",", [
+          "access-analyzer.amazonaws.com",
+          "backup.amazonaws.com",
+          "cloudtrail.amazonaws.com",
+          "compute-optimizer.amazonaws.com",
+          "config.amazonaws.com",
+          "config-multiaccountsetup.amazonaws.com",
+          "ds.amazonaws.com",
+          "fms.amazonaws.com",
+          "guardduty.amazonaws.com",
+          "inspector2.amazonaws.com",
+          "malware-protection.guardduty.amazonaws.com",
+          "malware-protection.guardduty.amazonaws.com",
+          "member.org.stacksets.cloudformation.amazonaws.com",
+          "ram.amazonaws.com",
+          "reporting.trustedadvisor.amazonaws.com",
+          "tagpolicies.tag.amazonaws.com",
+          "securityhub.amazonaws.com",
+          "servicecatalog.amazonaws.com",
+          "ssm.amazonaws.com",
+          "sso.amazonaws.com"
+        ])
+        "enabled_policy_types" : join(",", [
+          "AISERVICES_OPT_OUT_POLICY",
+          "SERVICE_CONTROL_POLICY",
+          "TAG_POLICY"
+        ])
+      }
     }
-    "organization.organization" = {
-      "aws_service_access_principals" : join(",", [
-        "access-analyzer.amazonaws.com",
-        "backup.amazonaws.com",
-        "cloudtrail.amazonaws.com",
-        "compute-optimizer.amazonaws.com",
-        "config.amazonaws.com",
-        "config-multiaccountsetup.amazonaws.com",
-        "ds.amazonaws.com",
-        "fms.amazonaws.com",
-        "guardduty.amazonaws.com",
-        "inspector2.amazonaws.com",
-        "malware-protection.guardduty.amazonaws.com",
-        "malware-protection.guardduty.amazonaws.com",
-        "member.org.stacksets.cloudformation.amazonaws.com",
-        "ram.amazonaws.com",
-        "reporting.trustedadvisor.amazonaws.com",
-        "tagpolicies.tag.amazonaws.com",
-        "securityhub.amazonaws.com",
-        "servicecatalog.amazonaws.com",
-        "ssm.amazonaws.com",
-        "sso.amazonaws.com"
-      ])
-      "enabled_policy_types" : join(",", [
-        "AISERVICES_OPT_OUT_POLICY",
-        "SERVICE_CONTROL_POLICY",
-        "TAG_POLICY"
-      ])
-    }
-    "organization.org_info_reader" = {
-      "iam_role_name" : "foundation-org-info-role"
-      "iam_role_path" : "/sc-admin-product/"
+    "management.tag_reader" : {
+      "iam_role_name" : "read-account-tags-role"
+      "iam_role_path" : "/"
       "trustee_arn" = (string)
     }
-    "organization.foundation_parameter" : {
+    "management.org_info_reader" = {
+      "iam_role_name" : "foundation-org-info-role"
+      "iam_role_path" : "/"
+      "trustee_arn" = (string)
+    }
+    "management.foundation_parameter" : {
       "writer" : {
         "iam_role_name" : "foundation-org-info-role"
         "iam_role_path" : "/sc-admin-product/"
@@ -125,7 +124,7 @@ locals {
         "iam_role_path" : "/sc-admin-product/"
       }
     }
-    "organization.delegations" : {
+    "management.delegations" : {
       "target_account_id" : {
         "guardduty" : local.core_security_account_id
         "securityhub" : local.core_security_account_id
@@ -226,7 +225,7 @@ EOT
       "image_consumption_execution_iam_role_arn" = module.report_image_consumption[0].lambda.lambda_execution_role_arn
       "iam_analyzer_execution_iam_role_arn"      = module.report_iam_analyzer.lambda.lambda_execution_role_arn
     }
-    "image_factory" = {
+    "security.image_factory" = {
       "image_tags" = {
         "launch_approval" : local.platform_parameter_readonly["core_image_factory"]["image_tags"]["launch_approval"]
       }

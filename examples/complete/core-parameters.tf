@@ -116,12 +116,12 @@ locals {
     }
     "management.foundation_parameter" : {
       "writer" : {
-        "iam_role_name" : "foundation-org-info-role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_name" : "foundation-parameter-writer-role"
+        "iam_role_path" : "/"
       }
       "reader" : {
         "iam_role_name" : "foundation-parameter-reader-role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
       }
     }
     "management.delegations" : {
@@ -137,7 +137,7 @@ locals {
     "security.account_hardening" = {
       "account_baseline" = {
         "iam_role_name" : "foundation-security--account-hardening--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "hub_execution_iam_role_arn" = module.account_hardening.shared_iam_execution_role_arn
@@ -145,7 +145,7 @@ locals {
     "security.auto_remediation" = {
       "account_baseline" = {
         "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "hub_execution_iam_role_arn"                = module.auto_remediation.shared_iam_execution_role_arn
@@ -156,7 +156,7 @@ locals {
         "recorder_name" : "foundation_aws_config_recorder"
         "delivery_channel_name" : "foundation_aws_config_s3_delivery"
         "iam_role_name" : "foundation-security--aws-config-recorder--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "logging_target_bucket_name" = format("platform-aws-config-aggregator-logs-%s", local.log_archive_account_id)
@@ -164,7 +164,7 @@ locals {
     "security.custom_config_evaluator" = {
       "account_baseline" = {
         "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "shared_execution_iam_role_arn" = module.config_evaluator_euc1.shared_lambda_execution_role_arn
@@ -172,7 +172,7 @@ locals {
     "security.firewall_manager_service" = {
       "account_baseline" = {
         "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "registration_execution_iam_role_arn" = module.firewall_manager_service.waf_logging_lambda.lambda_execution_role_arn
@@ -190,14 +190,6 @@ locals {
 EOT
       }
     }
-    "security.image_factory" = {
-      "account_baseline" = {
-        "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
-        "iam_role_boundary_policy" : "n/a"
-      }
-      "launch_permission_execution_iam_role_arn" = module.auto_remediation.image_factory_launch_permission.lambda.lambda_execution_role_arn
-    }
     "security.org_cloudtrail" = {
       "cloudtrail_admin" = {
         "cloudwatch_iam_role_name" = var.cloudwatch_logs_iam_role_name
@@ -211,15 +203,15 @@ EOT
     }
     "security.qualys_crawler" = {
       "account_baseline" = {
-        "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_name" : "foundation-security--qualys-crawler--role"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
     }
     "security.member_crawler" = {
       "account_baseline" = {
-        "iam_role_name" : "foundation-security--auto-remediation--role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_name" : "foundation-security--member-crawler--role"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
       "image_consumption_execution_iam_role_arn" = module.report_image_consumption[0].lambda.lambda_execution_role_arn
@@ -234,9 +226,12 @@ EOT
       "excepted_ami_accounts" : local.platform_parameter_readonly["core_image_factory"]["excepted_ami_accounts"]
       "account_baseline" = {
         "iam_role_name" : "platform-image-factory-spoke-role"
-        "iam_role_path" : "/sc-admin-product/"
+        "iam_role_path" : "/"
         "iam_role_boundary_policy" : "n/a"
       }
+      "launch_permission" = {
+        "execution_iam_role_arn" = module.auto_remediation.image_factory_launch_permission.lambda.lambda_execution_role_arn
+      }      
     }
     "connectivity.route53" : {
       "public_hosted_zones" : [

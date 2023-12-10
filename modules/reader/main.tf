@@ -39,7 +39,6 @@ locals {
   parameters_three_levels_temp3 = { for key, map in local.parameters_three_levels_temp2 : key => { for key2, list in map : key2 => merge(list...) } }
   parameters_three_levels       = { for key, o in local.parameters_three_levels_temp3 : key => merge(o, try(local.parameters_two_levels[key], {})) }
   parameters                    = merge(local.parameters_two_levels, local.parameters_three_levels)
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

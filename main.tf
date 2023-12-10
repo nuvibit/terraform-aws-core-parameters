@@ -41,7 +41,6 @@ resource "aws_ssm_parameter" "ssm_parameters" {
   type      = var.kms_key_arn == null ? "String" : "SecureString"
   value     = each.value
   key_id    = var.kms_key_arn
-  overwrite = var.parameters_overwrite
   tags      = var.resource_tags
   provider  = aws.ssm_ps_writer
 }

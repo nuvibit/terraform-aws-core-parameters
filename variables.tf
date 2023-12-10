@@ -3,12 +3,6 @@ variable "parameters" {
   type        = any
 }
 
-variable "parameters_overwrite" {
-  description = "Set to true to allow overwriting existing parameters. IAM role with write access is required."
-  type        = bool
-  default     = false
-}
-
 variable "parameters_path_prefix" {
   description = "Prefix name to allow fully qualified parameter names which allows parameters to be stored as a map."
   type        = string

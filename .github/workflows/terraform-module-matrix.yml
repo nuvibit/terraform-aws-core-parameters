@@ -10,7 +10,7 @@ on:
 
 jobs:
   terraform-module-matrix:
-    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-matrix.yml@v1
+    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-matrix.yml@v2
     if: ${{ github.event_name == 'pull_request' }}
     with:
       tflint_repo: "nuvibit/github-tflint-config"
@@ -25,7 +25,7 @@ jobs:
       TERRATEST_AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRATEST_AWS_SECRET_ACCESS_KEY }}
 
   terraform-module-release:
-    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-release.yml@v1
+    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-release.yml@v2
     if: ${{ github.event_name == 'push' }}
     secrets:
       GHE_API_TOKEN: ${{ secrets.GHE_API_TOKEN }}

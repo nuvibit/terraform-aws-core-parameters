@@ -10,7 +10,7 @@ on:
 
 jobs:
   terraform-module-matrix:
-    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-matrix.yml@v1
+    uses: nuvibit/github-terraform-workflows/.github/workflows/terraform-module-matrix.yml@v2
     if: ${{ github.event_name == 'pull_request' }}
     with:
       tflint_repo: "nuvibit/github-tflint-config"
